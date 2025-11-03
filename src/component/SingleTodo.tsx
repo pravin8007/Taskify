@@ -23,29 +23,31 @@ const SingleTodo: React.FC<Props> = ({ todo, todos, setTodos }) => {
         );
     };
 
-    const handleSubmit = (e: React.FormEvent, id: number) => {
-        e.preventDefault();
-        setTodos(
-            todos.map((todo) => (todo.id === id ? { ...todo, todo: editTodo } : todo))
-        );
-        setEdit(false);
-    };
-
 
     useEffect(() => {
         inputRef.current?.focus();
     }, [edit]);
 
-    const handleEditClick = (id: number) => {
-        if (edit) {
-            setTodos(todos.map((t) => (t.id === id ? { ...t, todo: editTodo } : t)));
-        }
+   const handleEditClick = (id: number) => {
+    const currentTodo = todos.find((t) => t.id === id);
+    if (!currentTodo) return;
 
-        if (!todo.isDone) setEdit(!edit);
-    };
+    if (edit && editTodo.trim() === "") return;
+
+    if (edit) {
+      setTodos(
+        todos.map((t) =>
+          t.id === id ? { ...t, todo: editTodo } : t
+        )
+      );
+    }
+
+    if (!currentTodo.isDone) setEdit(!edit); 
+  };
+
 
     return (
-        <form className={`todos_single ${todo.isDone ? "done" : ""}`} onSubmit={(e) => handleSubmit(e, todo.id)}>
+        <div className={`todos_single ${todo.isDone ? "done" : ""}`}>
 
             {edit ? (
                 <input
@@ -74,7 +76,7 @@ const SingleTodo: React.FC<Props> = ({ todo, todos, setTodos }) => {
                     <MdDone />
                 </span>
             </div>
-        </form>
+        </div>
     );
 };
 
